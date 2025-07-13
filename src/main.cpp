@@ -1,6 +1,7 @@
 #include <iostream>
 #include "core/def.h"
 #include "core/Configuration.h"
+#include "net/KrakenApi.h"
 
 int main() {
     std::cout << FULLNAME << std::endl;
@@ -47,6 +48,25 @@ int main() {
     }
     
     std::cout << BLUE "Application initialized successfully!" STOP << std::endl;
-    
+
+    API::KrakenApi api;
+    api.SetCredentials("your_api_key", "your_api_secret");
+    api.SetSandboxMode(true); // Pour les tests
+
+    // Test de connexion
+    if (api.TestConnection()) {
+        std::cout << "Connected to Kraken!" << std::endl;
+    }
+
+    // Obtenir le ticker
+    API::TickerData ticker = api.GetTicker("XBTUSD");
+    std::cout << "BTC/USD: " << ticker.last << std::endl;
+
+    // Placer un ordre
+    std::string orderId = api.PlaceMarketOrder("XBTUSD", "buy", 0.001);
+    if (!orderId.empty()) {
+        std::cout << "Order placed: " << orderId << std::endl;
+    }
+
     return 0;
 }
